@@ -21,6 +21,7 @@ KimiVoice是一款基于Moonshot AI的Android系统级语音控制应用，可�
 
 - 🎯 **实时VAD语音检测** - 智能识别说话开始和结束
 - 🤖 **AI指令生成** - Moonshot AI理解自然语音并生成shell命令
+- 🗣️ **TTS语音回复** - AI回复自动语音播报，双向语音对话体验
 - 🔒 **企业级安全** - AES-GCM加密 + Android KeyStore硬件保护
 - ⚡ **高性能处理** - Kotlin协程异步处理，响应迅速
 - 🛡️ **安全机制** - 指令白名单+黑名单双重验证
@@ -28,12 +29,13 @@ KimiVoice是一款基于Moonshot AI的Android系统级语音控制应用，可�
 
 ### 🎯 支持功能
 
-- WiFi开关控制
-- 音量调节
-- 屏幕控制（截图、锁屏）
-- 应用启动
-- 系统设置调整
-- 更多自定义指令...
+- 🔊 **语音对话** - 双向语音交互，就像和真人对话
+- 📡 **WiFi/蓝牙控制** - 语音开关网络连接
+- 🔊 **音量调节** - 静音、增大减小音量
+- 📱 **应用启动** - 语音打开任何应用
+- ⚙️ **系统设置** - 调整系统配置
+- 🎮 **屏幕控制** - 截图、锁屏、点击等
+- 🔧 **更多自定义指令** - 可扩展白名单
 
 ---
 
@@ -56,6 +58,7 @@ KimiVoice是一款基于Moonshot AI的Android系统级语音控制应用，可�
 | Gson | 2.11.0 | JSON解析 |
 | Coroutines | 1.9.0 | 协程支持 |
 | Timber | 5.0.1 | 日志工具 |
+| TextToSpeech | Android内置 | 语音合成 |
 
 ### 架构特点
 
@@ -74,12 +77,33 @@ KimiVoice是一款基于Moonshot AI的Android系统级语音控制应用，可�
 - ✅ Android Studio 2024+
 - ✅ Android SDK 35
 - ✅ Moonshot API Key
+- ✅ Root权限 + Magisk（系统级功能）
 
-### 编译步骤
+### 📦 Magisk模块安装（推荐）
+
+**直接下载安装，无需编译！**
+
+1. **下载最新模块**
+   - [KimiVoice_TTS.zip](https://github.com/zhangbinhaoder/KimiVoice/raw/main/KimiVoice_TTS.zip) - **v1.2 TTS语音回复版** 🆕
+   - [KimiVoice更新模块.zip](https://github.com/zhangbinhaoder/KimiVoice/raw/main/KimiVoice%E6%9B%B4%E6%96%B0%E6%A8%A1%E5%9D%97.zip) - v1.1 基础版
+
+2. **Magisk安装**
+   - 打开 Magisk Manager
+   - 点击「模块」 → 「从本地安装」
+   - 选择下载的 zip 文件
+   - 重启手机
+
+3. **模块特性**
+   - ✅ 自动安装为系统应用（priv-app）
+   - ✅ 自动授予必要权限
+   - ✅ 系统级签名，完整功能
+   - ✅ 卸载模块自动删除
+
+### 🔧 自行编译（可选）
 
 ```bash
 # 1. 克隆仓库
-git clone https://github.com/YOUR_USERNAME/KimiVoice.git
+git clone https://github.com/zhangbinhaoder/KimiVoice.git
 cd KimiVoice
 
 # 2. 配置签名（如有系统签名）
@@ -124,16 +148,16 @@ adb install app/build/outputs/apk/release/app-release.apk
 
 ### 3. 语音控制
 
-清晰说出指令，例如：
-- "打开WiFi"
-- "关闭WiFi"
-- "静音"
-- "截图"
+清晰说出指令，AI会语音回复并执行：
+- "打开WiFi" → AI: "好的，正在为您打开WiFi"
+- "关闭蓝牙" → AI: "正在为您关闭蓝牙"
+- "打开设置" → AI: "正在为您打开设置应用"
+- "静音" → AI: "正在设置静音模式"
 
 ### 4. 工作流程
 
 ```
-用户说话 → VAD检测 → 录音 → 语音转文字 → AI生成指令 → 安全验证 → 执行
+用户说话 → VAD检测 → 录音 → 语音转文字 → AI生成回复 → TTS语音播报 → 执行指令
 ```
 
 ---
@@ -227,7 +251,55 @@ KimiVoice/
 
 ---
 
-## 🐛 常见问题
+## 🔔 版本更新
+
+### v1.2 - TTS语音回复版 (2025-12-27) 🆕
+
+✨ **新增功能**
+- 集成 TextToSpeech 语音合成引擎
+- AI回复自动语音播报
+- 双向语音对话体验（类似Kimi语音通话）
+- 智能提取和执行shell命令
+
+🔧 **改进**
+- 扩展指令白名单（支持蓝牙、数据、按键等）
+- 优化CmdReceiver执行逻辑（使用sh -c）
+- 改为通过广播执行指令
+- 完善错误处理和日志输出
+
+### v1.1 - 基础功能修复 (2025-12-26)
+
+🐛 **修复**
+- 修复蓝牙控制无效问题
+- 修复启动APP无响应问题
+- 添加更多系统命令支持
+
+### v1.0 - 首个版本 (2025-12-25)
+
+🎉 **初始发布**
+- 实时VAD语音检测
+- Moonshot AI语音识别
+- 系统指令执行
+- 安全加密存储
+
+---
+
+## 📊 功能对比
+
+| 功能 | v1.0 | v1.1 | v1.2 |
+|------|------|------|------|
+| VAD语音检测 | ✅ | ✅ | ✅ |
+| AI指令解析 | ✅ | ✅ | ✅ |
+| WiFi控制 | ✅ | ✅ | ✅ |
+| 蓝牙控制 | ❌ | ✅ | ✅ |
+| 启动APP | ❌ | ✅ | ✅ |
+| **TTS语音回复** | ❌ | ❌ | ✅ |
+| **双向对话** | ❌ | ❌ | ✅ |
+| 扩展白名单 | 基础 | 中等 | 完整 |
+
+---
+
+## 📚 文档资源
 
 ### Q: 服务启动失败？
 **A:** 检查API Key是否正确配置，格式至少20字符。
