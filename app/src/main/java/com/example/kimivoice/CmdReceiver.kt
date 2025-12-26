@@ -110,13 +110,25 @@ class CmdReceiver : BroadcastReceiver() {
         try {
             Timber.d("执行指令: $command")
             
-            val process = Runtime.getRuntime().exec(command)
+            // 使用 sh 执行，拥有更高的权限
+            val process = Runtime.getRuntime().exec(arrayOf("sh", "-c", command))
+            
+            // 读取输出
+            val output = process.inputStream.bufferedReader().use { it.readText() }
+            val error = process.errorStream.bufferedReader().use { it.readText() }
+            
             val exitCode = process.waitFor()
             
             if (exitCode == 0) {
                 Timber.d("指令执行成功")
+                if (output.isNotEmpty()) {
+                    Timber.d("输出: $output")
+                }
             } else {
                 Timber.w("指令执行失败，退出码: $exitCode")
+                if (error.isNotEmpty()) {
+                    Timber.w("错误信息: $error")
+                }
             }
         } catch (e: Exception) {
             Timber.e(e, "执行指令异常")

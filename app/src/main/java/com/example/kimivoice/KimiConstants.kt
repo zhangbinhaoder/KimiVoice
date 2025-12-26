@@ -26,8 +26,22 @@ object KimiConstants {
 
     // 指令白名单
     val ALLOWED_COMMANDS = listOf(
-        "svc wifi", "settings put", "am start", "am broadcast",
-        "service call", "input tap", "input swipe"
+        "svc wifi",        // WiFi控制
+        "svc bluetooth",   // 蓝牙控制
+        "svc data",        // 移动数据控制
+        "settings put",    // 系统设置
+        "settings get",    // 读取设置
+        "am start",        // 启动Activity
+        "am broadcast",    // 发送广播
+        "am force-stop",   // 停止应用
+        "service call",    // 调用系统服务
+        "input tap",       // 点击屏幕
+        "input swipe",     // 滑动屏幕
+        "input keyevent",  // 按键事件
+        "cmd",             // Android cmd工具
+        "pm grant",        // 授权
+        "pm revoke",       // 撤销权限
+        "dumpsys"         // 系统信息
     )
 
     // Android版本适配

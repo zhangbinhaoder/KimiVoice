@@ -16,15 +16,18 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.*
 import timber.log.Timber
 import java.io.File
+import android.speech.tts.TextToSpeech
+import java.util.Locale
 
 /**
- * 语音监听服务（完整实现版）
+ * 语音监听服务（完整实现版 + TTS语音回复）
  * 功能：
  * 1. 实时录音
  * 2. VAD（语音活动检测）
  * 3. 语音转文字
  * 4. AI指令解析
  * 5. 指令执行
+ * 6. TTS语音回复
  */
 class ListenService : LifecycleService() {
     // 通知渠道ID
@@ -51,6 +54,10 @@ class ListenService : LifecycleService() {
     private var speechFrames = 0
     private val audioBuffer = mutableListOf<ShortArray>()
     
+    // TTS 语音合成
+    private var textToSpeech: TextToSpeech? = null
+    private var ttsReady = false
+    
     override fun onCreate() {
         super.onCreate()
         Timber.d("ListenService创建")
@@ -63,6 +70,9 @@ class ListenService : LifecycleService() {
         
         // 加载配置
         loadConfiguration()
+        
+        // 初始化TTS
+        initializeTTS()
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -92,6 +102,10 @@ class ListenService : LifecycleService() {
         
         // 清理缓存
         AudioUtils.clearAudioCache(this)
+        
+        // 释放TTS
+        textToSpeech?.stop()
+        textToSpeech?.shutdown()
     }
     
     /**
@@ -109,6 +123,41 @@ class ListenService : LifecycleService() {
             Timber.d("配置加载成功: threshold=$energyThreshold")
         } catch (e: Exception) {
             Timber.e(e, "加载配置失败")
+        }
+    }
+    
+    /**
+     * 初始化TTS
+     */
+    private fun initializeTTS() {
+        textToSpeech = TextToSpeech(this) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                val result = textToSpeech?.setLanguage(Locale.CHINESE)
+                ttsReady = result != TextToSpeech.LANG_MISSING_DATA && 
+                          result != TextToSpeech.LANG_NOT_SUPPORTED
+                
+                if (ttsReady) {
+                    Timber.d("TTS初始化成功")
+                    // 设置语速（可选）
+                    textToSpeech?.setSpeechRate(1.0f)
+                } else {
+                    Timber.w("TTS中文语言不支持")
+                }
+            } else {
+                Timber.e("TTS初始化失败")
+            }
+        }
+    }
+    
+    /**
+     * 语音播报
+     */
+    private fun speak(text: String) {
+        if (ttsReady && textToSpeech != null) {
+            Timber.d("TTS播报: $text")
+            textToSpeech?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
+        } else {
+            Timber.w("TTS未就绪，无法播报")
         }
     }
     
@@ -318,18 +367,33 @@ class ListenService : LifecycleService() {
      */
     private suspend fun processCommand(userText: String) {
         try {
-            // 调用AI生成指令
+            // 调用AI生成指令和回复
             when (val result = NetworkUtils.chatWithAI(userText, apiKey)) {
                 is NetworkUtils.Result.Success -> {
-                    val command = result.data.trim()
-                    Timber.d("AI生成指令: $command")
+                    val aiResponse = result.data.trim()
+                    Timber.d("AI回复: $aiResponse")
                     
-                    // 执行指令
-                    executeCommand(command)
+                    // 语音播报AI回复
+                    withContext(Dispatchers.Main) {
+                        speak(aiResponse)
+                    }
+                    
+                    // 尝试从回复中提取shell命令（如果有）
+                    val command = extractCommand(aiResponse)
+                    if (command.isNotEmpty()) {
+                        // 执行指令
+                        executeCommand(command)
+                    } else {
+                        // 只是对话，没有指令，回到监听状态
+                        withContext(Dispatchers.Main) {
+                            updateNotification("正在监听...")
+                        }
+                    }
                 }
                 is NetworkUtils.Result.Error -> {
                     Timber.e("AI处理失败: ${result.message}")
                     withContext(Dispatchers.Main) {
+                        speak("抱歉，我没有理解您的意思")
                         updateNotification("正在监听...")
                     }
                 }
@@ -343,26 +407,40 @@ class ListenService : LifecycleService() {
     }
     
     /**
+     * 从AI回复中提取shell命令
+     */
+    private fun extractCommand(aiResponse: String): String {
+        // 检查是否包含shell命令（通常AI会明确说明）
+        val commandPrefixes = listOf("svc ", "am ", "settings ", "input ", "cmd ", "pm ", "dumpsys ")
+        
+        for (prefix in commandPrefixes) {
+            if (aiResponse.contains(prefix)) {
+                // 尝试提取命令行
+                val lines = aiResponse.lines()
+                for (line in lines) {
+                    val trimmed = line.trim()
+                    if (trimmed.startsWith(prefix)) {
+                        return trimmed
+                    }
+                }
+            }
+        }
+        
+        return ""
+    }
+    
+    /**
      * 执行指令
      */
     private suspend fun executeCommand(command: String) {
         try {
-            // 验证指令安全性
-            if (!CmdReceiver.isCommandAllowed(command)) {
-                Timber.w("指令被拒绝: $command")
-                withContext(Dispatchers.Main) {
-                    updateNotification("正在监听...")
-                }
-                return
-            }
+            // 通过广播发送给 CmdReceiver 执行
+            Timber.d("发送指令广播: $command")
+            val intent = Intent("com.example.kimivoice.EXECUTE_COMMAND")
+            intent.putExtra("command", command)
+            intent.setPackage(packageName)
+            sendBroadcast(intent)
             
-            // 执行指令
-            Timber.d("执行指令: $command")
-            val result = withContext(Dispatchers.IO) {
-                Runtime.getRuntime().exec(command).waitFor()
-            }
-            
-            Timber.d("指令执行完成，退出码: $result")
             withContext(Dispatchers.Main) {
                 updateNotification("正在监听...")
             }
