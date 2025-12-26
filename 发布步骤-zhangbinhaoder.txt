@@ -1,0 +1,167 @@
+========================================
+  KimiVoice GitHub 发布步骤
+  GitHub用户: zhangbinhaoder
+========================================
+
+📋 完整步骤（按顺序执行）
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+第一步：安装Git
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. 下载Git for Windows
+   访问：https://git-scm.com/download/win
+   
+2. 安装（保持默认选项）
+   - 一路点击 Next
+   - 安装完成
+   
+3. 重启命令提示符
+   ⚠️ 重要：必须关闭并重新打开命令提示符
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+第二步：创建GitHub仓库
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. 登录GitHub
+   访问：https://github.com/login
+   
+2. 创建新仓库
+   访问：https://github.com/new
+   
+3. 填写信息：
+   Repository name: KimiVoice
+   Description: 🎤 基于Moonshot AI的Android系统级语音控制应用
+   Public/Private: 选择 Public
+   
+   ⚠️ 重要：不要勾选以下选项
+   [ ] Add a README file
+   [ ] Add .gitignore
+   [ ] Choose a license
+   
+4. 点击 "Create repository"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+第三步：获取Personal Access Token
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+（如果已有Token可跳过）
+
+1. 访问Token设置页面
+   https://github.com/settings/tokens
+   
+2. 点击 "Generate new token" → "Generate new token (classic)"
+
+3. 设置：
+   Note: KimiVoice发布
+   Expiration: 90 days（或更长）
+   Select scopes:
+   ✓ repo（勾选所有repo相关）
+   
+4. 点击 "Generate token"
+
+5. ⚠️ 重要：复制并保存Token
+   格式类似：ghp_xxxxxxxxxxxxxxxxxxxx
+   （只显示一次，务必保存！）
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+第四步：执行发布
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. 双击运行文件
+   一键发布.bat
+   
+2. 等待脚本执行到推送步骤
+
+3. 当提示需要登录时：
+   Username: zhangbinhaoder
+   Password: 粘贴您的Personal Access Token
+   
+4. 等待推送完成
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+第五步：验证发布
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+访问您的仓库：
+https://github.com/zhangbinhaoder/KimiVoice
+
+应该能看到：
+✓ 所有源代码文件
+✓ README.md（项目说明）
+✓ LICENSE（MIT许可证）
+✓ .gitignore
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎨 美化仓库（可选）
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. 添加Topics标签
+   在仓库页面点击设置图标，添加：
+   - android
+   - kotlin
+   - voice-assistant
+   - ai
+   - moonshot
+   - speech-recognition
+
+2. 创建Release
+   - 进入 Releases 页面
+   - Create a new release
+   - Tag: v1.0.0
+   - Title: v1.0.0 - 首个正式版本
+   - 上传 app-release.apk
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❓ 常见问题
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q: 推送时显示 "Permission denied"
+A: Token权限不足，重新生成Token并确保勾选了repo权限
+
+Q: 显示 "Repository not found"
+A: 仓库名称不匹配或未创建，检查仓库是否为 KimiVoice
+
+Q: 无法输入Token
+A: 在命令提示符中，粘贴时看不到内容是正常的，
+   粘贴后直接按回车即可
+
+Q: Git命令无效
+A: 重启命令提示符，确保Git已正确安装
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ 快速检查清单
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+发布前：
+[ ] Git已安装
+[ ] GitHub仓库已创建（名称：KimiVoice）
+[ ] Personal Access Token已获取
+
+发布后：
+[ ] 代码已推送到GitHub
+[ ] README显示正常
+[ ] 添加了Topics标签
+[ ] （可选）创建了Release
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔗 重要链接
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+您的仓库: https://github.com/zhangbinhaoder/KimiVoice
+下载Git: https://git-scm.com/download/win
+创建仓库: https://github.com/new
+生成Token: https://github.com/settings/tokens
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+祝您发布顺利！🎉

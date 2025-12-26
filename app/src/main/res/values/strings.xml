@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App基础名称 -->
+    <string name="app_name">KimiVoice</string>
+
+    <!-- 输入框提示语 -->
+    <string name="hint_api_key">请输入Moonshot API Key</string>
+    <string name="hint_energy_threshold">音频能量阈值（默认2000）</string>
+
+    <!-- 按钮文本 -->
+    <string name="btn_save_config">保存配置</string>
+    <string name="btn_start_service">启动监听服务</string>
+    <string name="btn_stop_service">停止监听服务</string>
+</resources>

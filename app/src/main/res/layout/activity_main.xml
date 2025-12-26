@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <!-- API Key输入框 -->
+    <EditText
+        android:id="@+id/et_api_key"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:hint="@string/hint_api_key"
+        android:inputType="textPassword"
+        android:maxLines="1" />
+
+    <!-- 能量阈值输入框 -->
+    <EditText
+        android:id="@+id/et_energy_threshold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:hint="@string/hint_energy_threshold"
+        android:inputType="number"
+        android:maxLines="1" />
+
+    <!-- 保存配置按钮 -->
+    <Button
+        android:id="@+id/btn_save_config"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/btn_save_config" />
+
+    <!-- 服务控制按钮栏（删除所有易报错属性，仅保留通用属性） -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="5dp">
+
+        <!-- 第43行修复核心：仅保留通用属性，删除不兼容的style/backgroundTint -->
+        <Button
+            android:id="@+id/btn_start_service"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:text="@string/btn_start_service" />
+
+        <Button
+            android:id="@+id/btn_stop_service"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_weight="1"
+            android:text="@string/btn_stop_service" />
+    </LinearLayout>
+
+</LinearLayout>
